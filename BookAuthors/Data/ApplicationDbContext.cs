@@ -4,12 +4,14 @@ using BookAuthors.Models;
 
 namespace BookAuthors.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+        public DbSet<Author> Authors { get; set; } = default!;
+        public DbSet<Book> Books { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,7 +31,7 @@ namespace BookAuthors.Data
                 new Book { BookId = 3, Title = "Book 3" }
             );
 
-            // Seed data for many- many relationship between Authors and Books
+            // Many-to-many seed (join table is created automatically)
             modelBuilder.Entity<Author>()
                 .HasMany(a => a.Books)
                 .WithMany(b => b.Authors)
@@ -40,7 +42,6 @@ namespace BookAuthors.Data
                     new { AuthorsAuthorId = 2, BooksBookId = 3 },
                     new { AuthorsAuthorId = 3, BooksBookId = 1 }
                 ));
-
         }
     }
 }

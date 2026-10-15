@@ -1,0 +1,35 @@
+@model IEnumerable<BookAuthors.Models.Author>
+
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<h1>Authors</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Books</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@(item.Books.Any() ? string.Join(", ", item.Books.Select(b => b.Title)) : "—")</td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@item.AuthorId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.AuthorId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AuthorId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,50 +1,151 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using BookAuthors.Data
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - BookAuthors</title>
+
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BookAuthors.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 </head>
-<body>
+
+<body class="bg-light min-vh-100 d-flex flex-column">
+
+    <!-- Navbar -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BookAuthors</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+            <div class="container">
+
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold fs-4"
+                   asp-controller="Books"
+                   asp-action="Index">
+                    <span class="me-2">📚</span>BookAuthors
+                </a>
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler border-0 shadow-none"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <!-- Navigation Links -->
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav ms-auto gap-lg-2 py-2 py-lg-0">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link px-3 rounded"
+                               asp-controller="Books"
+                               asp-action="Index">
+                                Books
+                            </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link px-3 rounded"
+                               asp-controller="Authors"
+                               asp-action="Index">
+                                Authors
+                            </a>
                         </li>
+                        
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-white">
+                                    Hello, @User.Identity?.Name
+                                </span>
+                            </li>
+
+                            <li class="nav-item">
+                                <form asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      asp-route-returnUrl="@Url.Action("Index", "Books")"
+                                      method="post">
+                                    <button type="submit"
+                                            class="btn btn-outline-light btn-sm mt-1">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Register">
+                                    Register
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="btn btn-light btn-sm text-primary mt-1"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Login">
+                                    Login
+                                </a>
+                            </li>
+                        }
+                      
+
                     </ul>
+                   
                 </div>
+
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - BookAuthors - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Main Content -->
+    <main class="container flex-grow-1 py-4 py-md-5">
+
+        <div class="bg-white rounded-3 shadow-sm p-3 p-md-4">
+            @RenderBody()
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-top mt-auto">
+        <div class="container py-3">
+            <div class="d-flex flex-column flex-sm-row
+                justify-content-between align-items-center gap-2">
+
+                <span class="text-secondary small">
+                    &copy; @DateTime.Now.Year BookAuthors
+                </span>
+
+                <a class="link-secondary text-decoration-none small"
+                   asp-controller="Home"
+                   asp-action="Privacy">
+                    Privacy Policy
+                </a>
+
+                <span class="text-secondary small">
+                    Built with ASP.NET Core MVC
+                </span>
+
+            </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
